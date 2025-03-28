@@ -1,7 +1,10 @@
 import "./App.css";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
 
 function App() {
-  return <>This is root</>;
+  return <><Login/>
+  </>;
 }
 
 export default App;
