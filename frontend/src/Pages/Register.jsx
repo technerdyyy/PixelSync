@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import image from "../assets/image.png";
+import axios from "axios";
+import image from "../assets/image.png"; 
 
 const Register = () => {
   const [data, setData] = useState({
@@ -16,9 +17,17 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Data:", data);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/users/register",
+        data 
+      );
+      alert(response.data.message); // Success message
+    } catch (error) {
+      alert("Error: " + (error.response?.data?.message || "Something went wrong"));
+    }
   };
 
   return (
@@ -26,13 +35,13 @@ const Register = () => {
       <div className="flex flex-col md:flex-row bg-[#222222] text-white rounded-[65px] shadow-lg w-full max-w-4xl">
         
         {/* Left Side (Image) */}
-        <div className=" md:block md:w-1/2 bg-purple-400 flex items-center justify-center rounded-[65px] overflow-hidden">
+        <div className="md:block md:w-1/2 bg-purple-400 flex items-center justify-center rounded-[65px] overflow-hidden">
           <img src={image} alt="Background" className="w-full h-full object-cover" />
         </div>
 
         {/* Right Side (Form) */}
         <div className="w-full md:w-3/5 p-6 md:p-8">
-          <h1 className="text-xl font-tiro-telugu md:text-2xl font-bold mb-4 text-center ">PixelSync</h1>
+          <h1 className="text-xl font-tiro-telugu md:text-2xl font-bold mb-4 text-center">PixelSync</h1>
           <form onSubmit={handleSubmit}>
             
             <div className="mb-4">
