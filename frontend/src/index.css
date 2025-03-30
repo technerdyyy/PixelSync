@@ -1,6 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Tiro+Telugu:wght@400&display=swap');
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Tiro+Telugu&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
 .font-tiro-telugu {
   font-family: 'Tiro Telugu', serif;
   font-size: 50px;
@@ -10,4 +10,3 @@
   font-variation-settings: "opsz" auto;
   color: #FBE6FF;
 }
-
