@@ -9,7 +9,7 @@ import Login from "./Pages/Login.jsx";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-import Home from "./Pages/Home.jsx";
+import DrawingCanvas from "./Pages/DrawingCanvas.jsx";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +30,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <Home />,
+            element: <DrawingCanvas />,
           },
         ],
       },
