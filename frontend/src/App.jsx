@@ -1,7 +1,8 @@
 import "./App.css";
+import DrawingCanvas from "./components/DrawingCanvas";
 
 function App() {
-  return <>This is root</>;
+  return <DrawingCanvas />;
 }
 
 export default App;
