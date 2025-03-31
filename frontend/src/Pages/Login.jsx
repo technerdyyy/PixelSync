@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import image from "../assets/image.png"; // Ensure the correct path
 import user from "../assets/user.png"; // Ensure the correct path
-
+import axios from "axios";
 const Login = () => {
   const [data, setData] = useState({
     email: "",
@@ -16,9 +16,15 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Data:", data);
+    try {
+      const response = await axios.post("http://localhost:5000/api/auth/login", data);
+      alert(response.data.message); // Show success message
+      localStorage.setItem("token", response.data.token); // Store token
+    } catch (error) {
+      alert("Error: " + (error.response?.data?.error || "Something went wrong"));
+    }
   };
 
   return (
