@@ -1,32 +1,64 @@
-const User = require("../models/UserModel");
+const User = require("../models/UserModel"); // ✅ Correct import
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const loginUser = async (req, res) => {
+async function loginUser(request, response) {
   try {
-    const { email, password } = req.body;
+    const { email, password } = request.body;
+    console.log("Received Data:", request.body);
 
-    // Check if user exists
+    //  Find user by email instead of userId
     const user = await User.findOne({ email });
+
+    //  Check if user exists
     if (!user) {
-      return res.status(400).json({ error: "User not found" });
+      return response.status(400).json({
+        message: "User not found",
+        error: true,
+      });
     }
 
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: "Invalid credentials" });
+    //  Fix bcrypt function
+    const verifyPassword = await bcrypt.compare(password, user.password);
+
+    if (!verifyPassword) {
+      return response.status(400).json({
+        message: "Incorrect password",
+        error: true,
+      });
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    //  Token data
+    const tokenData = {
+      id: user._id,
+      email: user.email,
+    };
 
-    res.json({ message: "Login successful", token });
+    //  Ensure correct JWT secret
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: "1d" });
+
+    //  Correct cookie options
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None", // Required for cross-origin requests
+    };
+
+    return response
+      .cookie("token", token, cookieOptions)
+      .status(200)
+      .json({
+        message: "Login successful",
+        token: token,
+        success: true,
+      });
+
   } catch (error) {
-    res.status(500).json({ error: "Server error" });
+    return response.status(500).json({
+      message: error.message || "Server error",
+      error: true,
+    });
   }
-};
+}
 
-module.exports = { loginUser };
+module.exports = loginUser;

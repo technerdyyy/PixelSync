@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import image from "../assets/image.png"; 
+import image from "../assets/image.png";
 
 const Register = () => {
   const [data, setData] = useState({
@@ -9,6 +10,7 @@ const Register = () => {
     password: "",
   });
 
+  const navigate = useNavigate();
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setData((prev) => ({
@@ -22,28 +24,43 @@ const Register = () => {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/users/register",
-        data 
+        data
       );
+
       alert(response.data.message); // Success message
+      if (response.data.success) {
+        setData({
+          name: "",
+          email: "",
+          password: "",
+        });
+        navigate("/login");
+      }
     } catch (error) {
-      alert("Error: " + (error.response?.data?.message || "Something went wrong"));
+      alert(
+        "Error: " + (error.response?.data?.message || "Something went wrong")
+      );
     }
   };
 
   return (
     <div className="flex h-screen items-center justify-center bg-black px-4">
       <div className="flex flex-col md:flex-row bg-[#222222] text-white rounded-[65px] shadow-lg w-full max-w-4xl">
-        
         {/* Left Side (Image) */}
         <div className="md:block md:w-1/2 bg-purple-400 flex items-center justify-center rounded-[65px] overflow-hidden">
-          <img src={image} alt="Background" className="w-full h-full object-cover" />
+          <img
+            src={image}
+            alt="Background"
+            className="w-full h-full object-cover"
+          />
         </div>
 
         {/* Right Side (Form) */}
         <div className="w-full md:w-3/5 p-6 md:p-8">
-          <h1 className="text-xl font-tiro-telugu md:text-2xl font-bold mb-4 text-center">PixelSync</h1>
+          <h1 className="text-xl font-tiro-telugu md:text-2xl font-bold mb-4 text-center">
+            PixelSync
+          </h1>
           <form onSubmit={handleSubmit}>
-            
             <div className="mb-4">
               <label className="block text-gray-300">Full Name</label>
               <input
@@ -89,9 +106,10 @@ const Register = () => {
 
             <p className="text-center text-sm mt-4">
               Already have an account?{" "}
-              <a href="#" className="text-purple-400">Sign in</a>
+              <Link to={"/login"} className="text-purple-400">
+                Sign in
+              </Link>
             </p>
-
           </form>
         </div>
       </div>
