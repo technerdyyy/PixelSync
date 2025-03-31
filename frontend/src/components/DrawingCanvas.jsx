@@ -22,7 +22,7 @@ const DrawingCanvas = () => {
     "#808080",
   ];
 
-  // 📏 Function to dynamically set canvas size
+  // Function to dynamically set canvas size
   const setCanvasSize = () => {
     const canvas = canvasRef.current;
     const parent = canvas.parentElement; // Get parent container
@@ -38,28 +38,28 @@ const DrawingCanvas = () => {
     contextRef.current = context;
   };
 
-  // 🖌️ Initial Setup & Resize Handling
+  // Initial Setup & Resize Handling
   useEffect(() => {
     setCanvasSize();
     window.addEventListener("resize", setCanvasSize); // Update canvas on window resize
     return () => window.removeEventListener("resize", setCanvasSize);
   }, []);
 
-  // ✏️ Handle Brush & Eraser Mode
+  // Handle Brush & Eraser Mode
   useEffect(() => {
     const ctx = contextRef.current;
     if (!ctx) return;
     if (isErasing) {
-      contextRef.current.globalCompositeOperation = "destination-out";
-      contextRef.current.lineWidth = brushSize * 2;
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.lineWidth = brushSize * 2;
     } else {
-      contextRef.current.globalCompositeOperation = "source-over";
-      contextRef.current.strokeStyle = color;
-      contextRef.current.lineWidth = isPencilActive ? 0.5 : brushSize; // Apply pencil size
+      ctx.globalCompositeOperation = "source-over";
+      ctx.strokeStyle = color;
+      ctx.lineWidth = isPencilActive ? 0.5 : brushSize; // Apply pencil size
     }
   }, [color, brushSize, isErasing, isPencilActive]);
 
-  // ✍️ Start Drawing
+  // Start Drawing
   const startDrawing = (e) => {
     const { offsetX, offsetY } = getScaledCoords(e);
     contextRef.current.beginPath();
@@ -67,7 +67,7 @@ const DrawingCanvas = () => {
     setIsDrawing(true);
   };
 
-  // 🖋️ Draw on Canvas
+  // Draw on Canvas
   const draw = (e) => {
     if (!isDrawing) return;
     const { offsetX, offsetY } = getScaledCoords(e);
@@ -75,13 +75,13 @@ const DrawingCanvas = () => {
     contextRef.current.stroke();
   };
 
-  // 🛑 Stop Drawing
+  // Stop Drawing
   const stopDrawing = () => {
     contextRef.current.closePath();
     setIsDrawing(false);
   };
 
-  // 📍 Function to Scale Mouse Coordinates Based on Canvas Size
+  // Function to Scale Mouse Coordinates Based on Canvas Size
   const getScaledCoords = (e) => {
     const canvas = canvasRef.current;
     const scaleX = canvas.width / canvas.offsetWidth;
@@ -94,7 +94,7 @@ const DrawingCanvas = () => {
 
   return (
     <div className="flex flex-col items-center mt-5 w-full">
-      {/* 🎨 Color Palette */}
+      {/* Color Palette */}
       <div className="flex gap-2 mb-4 p-2 bg-[#FBE6FF]">
         {colors.map((paletteColor) => (
           <button
@@ -111,10 +111,10 @@ const DrawingCanvas = () => {
         ))}
       </div>
 
-      {/* 🛠️ Tools */}
+      {/* Tools */}
       <div className="flex gap-3 mb-4">
         <div className="relative w-12 ">
-          {/* 🎨 Brush Icon Display */}
+          {/* Pencil Icon Display */}
           <button
             onClick={() => {
               setIsPencilActive(true);
@@ -129,7 +129,7 @@ const DrawingCanvas = () => {
         </div>
 
         <div className="relative w-12 ">
-          {/* 🎨 Brush Icon Display */}
+          {/* Brush Icon Display */}
           <div
             className={`absolute inset-y-0 left-0 flex items-center  border rounded-lg p-3 ${
               isPencilActive ? "bg-[#FBE6FF]" : "bg-[#6F0081] text-white"
@@ -138,7 +138,7 @@ const DrawingCanvas = () => {
             <FaPaintBrush className="text-xl" />
           </div>
 
-          {/* 🎛️ Hidden Dropdown but still functional */}
+          {/* Hidden and functioning Dropdown */}
           <select
             value={brushSize}
             onChange={(e) => {
@@ -154,7 +154,7 @@ const DrawingCanvas = () => {
         </div>
 
         <button
-          onClick={(e) => {
+          onClick={() => {
             setIsErasing(false);
           }}
           className={`px-6 py-2 rounded-md ${
@@ -176,7 +176,7 @@ const DrawingCanvas = () => {
         </button>
       </div>
 
-      {/* 🖌️ Responsive Drawing Canvas */}
+      {/*  Responsive Drawing Canvas */}
       <div className="relative w-[90%] max-w-[1200px]">
         <canvas
           ref={canvasRef}
@@ -198,7 +198,7 @@ const DrawingCanvas = () => {
           className="border-black border-2 w-full"
         ></canvas>
 
-        {/* 🧽 Eraser Cursor */}
+        {/*  Eraser Cursor */}
         {isErasing && (
           <div
             className="absolute border border-black bg-white opacity-80"
@@ -206,7 +206,7 @@ const DrawingCanvas = () => {
               width: brushSize * 2,
               height: brushSize * 2,
               border: 2,
-              top: `${eraserPosition.y}`,
+              top: `${eraserPosition.y + 10}`,
               left: `${eraserPosition.x}`,
               // transform: "translate(-50%, -50%)",
               pointerEvents: "none",
