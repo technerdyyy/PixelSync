@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaPaintBrush, FaPencilAlt } from "react-icons/fa";
+import { FaPaintBrush, FaPencilAlt, FaFillDrip } from "react-icons/fa";
 
 const DrawingCanvas = () => {
   const canvasRef = useRef(null);
@@ -18,8 +18,10 @@ const DrawingCanvas = () => {
     "#0000FF",
     "#FFFF00",
     "#FF00FF",
+    "#FFA500",
     "#00FFFF",
     "#808080",
+    "#8B4513",
   ];
 
   // Function to dynamically set canvas size
@@ -114,6 +116,21 @@ const DrawingCanvas = () => {
       {/* Tools */}
       <div className="flex gap-3 mb-4">
         <div className="relative w-12 ">
+          {/* Fill Color Icon Display */}
+          <button
+            onClick={() => {
+              setIsPencilActive(true);
+              setBrushSize(0.5); // Thin like a real pencil
+            }}
+            className={`absolute inset-y-0 left-0 flex items-center cursor-pointer border rounded-lg p-3 ${
+              isPencilActive ? "bg-[#6F0081] text-white" : "bg-[#FBE6FF]"
+            }`}
+          >
+            <FaFillDrip className="text-lg" />
+          </button>
+        </div>
+
+        <div className="relative w-12 ">
           {/* Pencil Icon Display */}
           <button
             onClick={() => {
@@ -203,12 +220,12 @@ const DrawingCanvas = () => {
           <div
             className="absolute border border-black bg-white opacity-80"
             style={{
-              width: brushSize * 2,
-              height: brushSize * 2,
-              border: 2,
-              top: `${eraserPosition.y + 10}`,
-              left: `${eraserPosition.x}`,
-              // transform: "translate(-50%, -50%)",
+              width: `${brushSize * 4}px`, // Make eraser more visible
+              height: `${brushSize * 4}px`,
+              top: `${eraserPosition.y + 10}px`,
+              left: `${eraserPosition.x + 10}px`,
+              transform: "translate(-50%, -50%)",
+              position: "absolute",
               pointerEvents: "none",
             }}
           ></div>
