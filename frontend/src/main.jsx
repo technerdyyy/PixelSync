@@ -7,7 +7,7 @@ import App from "./App.jsx";
 import Register from "./Pages/Register.jsx";
 import Login from "./Pages/Login.jsx";
 import { Provider } from "react-redux";
-import { store } from "./redux/store";
+import { store } from "./redux/store.js";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import DrawingCanvas from "./Pages/DrawingCanvas.jsx";
 

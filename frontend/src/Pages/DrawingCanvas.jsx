@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaPaintBrush, FaPencilAlt, FaFillDrip } from "react-icons/fa";
 import { RiDeleteBin2Fill } from "react-icons/ri";
+import Sidebar from "../Components/Sidebar";
 
 const DrawingCanvas = () => {
   const canvasRef = useRef(null);
@@ -187,180 +188,187 @@ const DrawingCanvas = () => {
   };
 
   return (
-    <div className="flex flex-col items-center mt-5 w-full">
-      {/* Color Palette */}
-      <div className="flex gap-2 mb-4 p-2 bg-[#FBE6FF]">
-        {colors.map((paletteColor) => (
-          <button
-            key={paletteColor}
-            onClick={() => {
-              setColor(paletteColor);
-              setIsErasing(false);
-            }}
-            className={`w-8 h-8 rounded-2xl ${
-              color === paletteColor
-                ? "border-black border-2"
-                : "border-2 border-gray-300"
-            }`}
-            style={{ backgroundColor: paletteColor }}
-          />
-        ))}
-      </div>
+    <div className="flex">
+      {/* Sidebar */}
+      <Sidebar />
 
-      {/* Tools */}
-      <div className="flex gap-3 mb-4">
-        <div className="relative w-12 ">
-          {/* Dustbin Icon Display */}
-          <button
-            onClick={() => {
-              setIsBinActive(true); // Toggle bin active state
-              clearCanvas(); // Clear the canvas when clicked
-              setIsFillActive(false); // Deselect fill tool
-              setIsPencilActive(false); // Deselect pencil tool
-              setIsErasing(false); // Deselect eraser
-            }}
-            className={`absolute inset-y-0 left-0 flex items-center cursor-pointer border rounded-lg p-3 ${
-              isBinActive ? "bg-[#6F0081] text-white" : "bg-[#FBE6FF]"
-            }`}
-          >
-            <RiDeleteBin2Fill className="text-lg" />
-          </button>
+      {/* Canvas */}
+      <div className="flex flex-col items-center mt-5 w-full">
+        {/* Color Palette */}
+        <div className="flex gap-2 mb-4 p-2 bg-[#FBE6FF]">
+          {colors.map((paletteColor) => (
+            <button
+              key={paletteColor}
+              onClick={() => {
+                setColor(paletteColor);
+                setIsErasing(false);
+              }}
+              className={`w-8 h-8 rounded-2xl ${
+                color === paletteColor
+                  ? "border-black border-2"
+                  : "border-2 border-gray-300"
+              }`}
+              style={{ backgroundColor: paletteColor }}
+            />
+          ))}
         </div>
 
-        <div className="relative w-12 ">
-          {/* Fill Color Icon Display */}
+        {/* Tools */}
+        <div className="flex gap-3 mb-4">
+          <div className="relative w-12 ">
+            {/* Dustbin Icon Display */}
+            <button
+              onClick={() => {
+                setIsBinActive(true); // Toggle bin active state
+                clearCanvas(); // Clear the canvas when clicked
+                setIsFillActive(false); // Deselect fill tool
+                setIsPencilActive(false); // Deselect pencil tool
+                setIsErasing(false); // Deselect eraser
+              }}
+              className={`absolute inset-y-0 left-0 flex items-center cursor-pointer border rounded-lg p-3 ${
+                isBinActive ? "bg-[#6F0081] text-white" : "bg-[#FBE6FF]"
+              }`}
+            >
+              <RiDeleteBin2Fill className="text-lg" />
+            </button>
+          </div>
+
+          <div className="relative w-12 ">
+            {/* Fill Color Icon Display */}
+            <button
+              onClick={() => {
+                setIsFillActive(true);
+                setIsPencilActive(false);
+                setIsErasing(false);
+                setIsBinActive(false);
+              }}
+              className={`absolute inset-y-0 left-0 flex items-center cursor-pointer border rounded-lg p-3 ${
+                isFillActive ? "bg-[#6F0081] text-white" : "bg-[#FBE6FF]"
+              }`}
+            >
+              <FaFillDrip className="text-lg" />
+            </button>
+          </div>
+
+          <div className="relative w-12 ">
+            {/* Pencil Icon Display */}
+            <button
+              onClick={() => {
+                setIsPencilActive(true);
+                setIsFillActive(false);
+                setIsBinActive(false);
+                setIsErasing(false);
+                setBrushSize(0.5); // Thin like a real pencil
+              }}
+              className={`absolute inset-y-0 left-0 flex items-center cursor-pointer border rounded-lg p-3 ${
+                isPencilActive ? "bg-[#6F0081] text-white" : "bg-[#FBE6FF]"
+              }`}
+            >
+              <FaPencilAlt className="text-lg" />
+            </button>
+          </div>
+
+          <div className="relative w-12 ">
+            {/* Brush Icon Display */}
+            <button
+              onClick={() => {
+                setIsPencilActive(false);
+                setIsErasing(false);
+                setIsFillActive(false);
+                setIsBinActive(false);
+              }}
+              className={`absolute inset-y-0 left-0 flex items-center  border rounded-lg p-3 ${
+                !isPencilActive && !isFillActive && !isErasing
+                  ? "bg-[#6F0081] text-white"
+                  : "bg-[#FBE6FF]"
+              }`}
+            >
+              <FaPaintBrush className="text-xl" />
+            </button>
+
+            {/* Hidden and functioning Dropdown */}
+            <select
+              value={brushSize}
+              onChange={(e) => {
+                setIsPencilActive(false);
+                setIsFillActive(false);
+                setIsBinActive(false);
+                setBrushSize(Number(e.target.value));
+              }}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            >
+              <option value={2}>Thin</option>
+              <option value={5}>Medium</option>
+              <option value={10}>Thick</option>
+            </select>
+          </div>
+
           <button
             onClick={() => {
-              setIsFillActive(true);
-              setIsPencilActive(false);
               setIsErasing(false);
               setIsBinActive(false);
             }}
-            className={`absolute inset-y-0 left-0 flex items-center cursor-pointer border rounded-lg p-3 ${
-              isFillActive ? "bg-[#6F0081] text-white" : "bg-[#FBE6FF]"
+            className={`px-6 py-2 rounded-md ${
+              isErasing ? "bg-[#FBE6FF]" : "bg-[#6F0081] text-white"
             }`}
           >
-            <FaFillDrip className="text-lg" />
+            Draw
           </button>
-        </div>
-
-        <div className="relative w-12 ">
-          {/* Pencil Icon Display */}
           <button
             onClick={() => {
-              setIsPencilActive(true);
-              setIsFillActive(false);
-              setIsBinActive(false);
-              setIsErasing(false);
-              setBrushSize(0.5); // Thin like a real pencil
+              setIsFillActive(false); // Deselect Fill
+              setIsPencilActive(false); // Deselect Pencil
+              setIsErasing(true);
             }}
-            className={`absolute inset-y-0 left-0 flex items-center cursor-pointer border rounded-lg p-3 ${
-              isPencilActive ? "bg-[#6F0081] text-white" : "bg-[#FBE6FF]"
+            className={`px-6 py-2 rounded-md ${
+              isErasing ? "bg-[#6F0081] text-white" : "bg-[#FBE6FF]"
             }`}
           >
-            <FaPencilAlt className="text-lg" />
+            Erase
           </button>
         </div>
 
-        <div className="relative w-12 ">
-          {/* Brush Icon Display */}
-          <button
-            onClick={() => {
-              setIsPencilActive(false);
-              setIsErasing(false);
-              setIsFillActive(false);
-              setIsBinActive(false);
-            }}
-            className={`absolute inset-y-0 left-0 flex items-center  border rounded-lg p-3 ${
-              !isPencilActive && !isFillActive && !isErasing
-                ? "bg-[#6F0081] text-white"
-                : "bg-[#FBE6FF]"
-            }`}
-          >
-            <FaPaintBrush className="text-xl" />
-          </button>
+        {/*  Responsive Drawing Canvas */}
+        <div className="relative w-[90%] max-w-[1200px]">
+          <canvas
+            ref={canvasRef}
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseLeave={stopDrawing}
+            onClick={(e) => {
+              if (isFillActive) {
+                const { offsetX, offsetY } = getScaledCoords(e);
+                const ctx = contextRef.current;
+                const targetColor = ctx.getImageData(offsetX, offsetY, 1, 1)
+                  .data;
+                const fillColor = hexToRgb(color);
 
-          {/* Hidden and functioning Dropdown */}
-          <select
-            value={brushSize}
-            onChange={(e) => {
-              setIsPencilActive(false);
-              setIsFillActive(false);
-              setIsBinActive(false);
-              setBrushSize(Number(e.target.value));
-            }}
-            className="absolute inset-0 opacity-0 cursor-pointer"
-          >
-            <option value={2}>Thin</option>
-            <option value={5}>Medium</option>
-            <option value={10}>Thick</option>
-          </select>
-        </div>
-
-        <button
-          onClick={() => {
-            setIsErasing(false);
-            setIsBinActive(false);
-          }}
-          className={`px-6 py-2 rounded-md ${
-            isErasing ? "bg-[#FBE6FF]" : "bg-[#6F0081] text-white"
-          }`}
-        >
-          Draw
-        </button>
-        <button
-          onClick={() => {
-            setIsFillActive(false); // Deselect Fill
-            setIsPencilActive(false); // Deselect Pencil
-            setIsErasing(true);
-          }}
-          className={`px-6 py-2 rounded-md ${
-            isErasing ? "bg-[#6F0081] text-white" : "bg-[#FBE6FF]"
-          }`}
-        >
-          Erase
-        </button>
-      </div>
-
-      {/*  Responsive Drawing Canvas */}
-      <div className="relative w-[90%] max-w-[1200px]">
-        <canvas
-          ref={canvasRef}
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-          onClick={(e) => {
-            if (isFillActive) {
-              const { offsetX, offsetY } = getScaledCoords(e);
-              const ctx = contextRef.current;
-              const targetColor = ctx.getImageData(offsetX, offsetY, 1, 1).data;
-              const fillColor = hexToRgb(color);
-
-              if (!colorMatch(targetColor, fillColor)) {
-                floodFill(offsetX, offsetY, targetColor, fillColor);
+                if (!colorMatch(targetColor, fillColor)) {
+                  floodFill(offsetX, offsetY, targetColor, fillColor);
+                }
               }
-            }
-          }}
-          style={{ cursor: isFillActive ? "pointer" : "crosshair" }}
-          className="border-black border-2 w-full"
-        />
-
-        {/*  Eraser Cursor */}
-        {isErasing && (
-          <div
-            className="absolute border border-black bg-white opacity-80"
-            style={{
-              width: `${brushSize * 4}px`, // Make eraser more visible
-              height: `${brushSize * 4}px`,
-              top: `${eraserPosition.y + 10}px`,
-              left: `${eraserPosition.x + 10}px`,
-              transform: "translate(-50%, -50%)",
-              position: "absolute",
-              pointerEvents: "none",
             }}
-          ></div>
-        )}
+            style={{ cursor: isFillActive ? "pointer" : "crosshair" }}
+            className="border-black border-2 w-full"
+          />
+
+          {/*  Eraser Cursor */}
+          {isErasing && (
+            <div
+              className="absolute border border-black bg-white opacity-80"
+              style={{
+                width: `${brushSize * 4}px`, // Make eraser more visible
+                height: `${brushSize * 4}px`,
+                top: `${eraserPosition.y + 10}px`,
+                left: `${eraserPosition.x + 10}px`,
+                transform: "translate(-50%, -50%)",
+                position: "absolute",
+                pointerEvents: "none",
+              }}
+            ></div>
+          )}
+        </div>
       </div>
     </div>
   );
