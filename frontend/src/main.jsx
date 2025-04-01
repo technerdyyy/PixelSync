@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store.js";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import DrawingCanvas from "./Pages/DrawingCanvas.jsx";
+import ChatComponent from "./Pages/ChatComponent.jsx";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
           {
             path: "",
             element: <DrawingCanvas />,
+          },
+          {
+            path: "chat",
+            element: <ChatComponent />, // ✅ Add ChatComponent here
           },
         ],
       },
