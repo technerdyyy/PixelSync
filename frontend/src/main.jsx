@@ -11,6 +11,7 @@ import { store } from "./redux/store.js";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import DrawingCanvas from "./Pages/DrawingCanvas.jsx";
 import UserProfile from "./Pages/UserProfile.jsx";
+import ChatComponent from "./Pages/ChatComponent.jsx";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
           {
             path: "profile",
             element: <UserProfile />,
+          },
+          {
+            path: "chat",
+            element: <ChatComponent />,
           },
         ],
       },
