@@ -12,7 +12,7 @@ const DrawingCanvas = () => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // console.log("redux user", user);
+  console.log("redux user", user);
 
   const fetchUserDetails = async () => {
     const token = Cookies.get("token");
