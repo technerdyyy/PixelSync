@@ -1,62 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../Components/Sidebar"; 
 import user from "../assets/user.png";
+import socket from "../socket";  
 
 const ChatComponent = () => {
-    const [messages, setMessages] = useState([
-        { id: 1, img: user, text: "Hi, John! Just checking if we're still on for the meeting at 2 PM today?", time: "12:30 PM", sent: false },
-        { id: 2, img: user, text: "Yes, absolutely! I've prepared all the documents we need to discuss.", time: "12:32 PM", sent: true },
-        { id: 3, img: user, text: "Perfect! I'll see you in the conference room then.", time: "12:33 PM", sent: false },
-    ]);
-    
+    const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
+    const [clientId, setClientId] = useState(null);
+
+    useEffect(() => {
+        socket.on("connect", () => {
+            setClientId(socket.id);
+            console.log("Connected! Client ID:", socket.id); // 🔴 DEBUG
+        });
+
+        socket.on("message", (message) => {
+            console.log("Received message:", message); // 🔴 DEBUG
+            console.log("Client ID:", clientId, "Message Sender ID:", message.senderId); // 🔴 DEBUG
+            setMessages((prevMessages) => [...prevMessages, message]);
+        });
+
+        return () => {
+            socket.off("message");
+        };
+    }, []);
 
     const handleSendMessage = (e) => {
         e.preventDefault(); 
 
-        if (newMessage.trim() === "") return; // Don't send empty messages
+        if (newMessage.trim() === "") return;
 
         const newMsg = {
-            id: messages.length + 1,
-            img: user,
             text: newMessage,
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            sent: true, // Assuming the user is sending this
+            img: user
         };
 
-        setMessages([...messages, newMsg]); // Update chat messages
-        setNewMessage(""); // Clear input field
+        socket.emit("chatMessage", newMsg);
+        setNewMessage("");
     };
 
     return (
         <div className="flex">
             <Sidebar />
             <section className="h-[100vh] w-full flex flex-col">
-                {/* Header with shadow */}
+                {/* Header */}
                 <div className="upper w-full h-[10vh] flex p-4 gap-5 items-center shadow-md bg-white">
                     <img src={user} alt="User" className="w-12 h-12 rounded-full"/>
                     <h1 className="text-2xl font-bold">Pixie Dust</h1>
                 </div>
 
-                {/* Chat messages area */}
+                {/* Chat messages */}
                 <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
-                    {messages.map((message) => (
-                        <div 
-                            key={message.id} 
-                            className={`flex items-start gap-2 mb-4 max-w-[30%] p-3 rounded-lg ${message.sent ? 'bg-[#6F0081] text-white ml-auto flex-row-reverse' : 'bg-gray-200 text-black mr-auto'}`}
-                        >
-                            <img src={message.img} alt="User" className="w-10 h-8 rounded-full" />
-                            <div>
-                                <p>{message.text}</p>
-                                <p className={`text-xs mt-1 ${message.sent ? 'text-purple-200' : 'text-gray-500'}`}>
-                                    {message.time}
-                                </p>
+                    {messages.map((message, index) => {
+                        const isSent = message.senderId === clientId; // Compare sender ID with client ID
+                        console.log("Rendering Message:", message.text, "Sent:", isSent); // 🔴 DEBUG
+
+                        return (
+                            <div 
+                                key={index} 
+                                className={`flex items-start gap-2 mb-4 max-w-[30%] p-3 rounded-lg 
+                                    ${isSent ? 'bg-gray-200 text-black mr-auto' : 'bg-[#6F0081] text-white ml-auto flex-row-reverse'}`}
+                            >
+                                <img src={message.img} alt="User" className="w-10 h-8 rounded-full" />
+                                <div>
+                                    <p>{message.text}</p>
+                                    <p className={`text-xs mt-1 ${isSent ? 'text-gray-500' : 'text-purple-200'}`}>
+                                        {message.time}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
-                {/* Message input field */}
+                {/* Message input */}
                 <div className="p-4 border-t border-gray-200 bg-white">
                     <form className="flex items-center gap-2" onSubmit={handleSendMessage}>
                         <input 
@@ -72,12 +90,6 @@ const ChatComponent = () => {
                             </svg>
                         </button>
                     </form>
-                    
-                    <div className="flex justify-between mt-2 text-xs text-gray-500">
-                        <span>Canvas</span>
-                        <span>Tags</span>
-                        <span>Export</span>
-                    </div>
                 </div>
             </section>
         </div>
