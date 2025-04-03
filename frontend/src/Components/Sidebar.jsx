@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { logout } from "../redux/userSlice";
 import Cookies from "js-cookie";
+import Avatar from "./Avatar";
 
 const Sidebar = () => {
   const { user } = useSelector((state) => state.user);
@@ -56,10 +57,11 @@ const Sidebar = () => {
             : "hover:bg-[#EAAEF5]"
         }`}
       >
-        <FaUser
+        {/* <FaUser
           size={30}
           className={isActive("/profile") ? "text-white" : "text-[#6F0081]"}
-        />
+        /> */}
+        <Avatar name={user?.name} width={40} height={40} />
       </button>
 
       {/* Logout Icon */}

@@ -2,6 +2,7 @@ import React from "react";
 import Sidebar from "../Components/Sidebar";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import Avatar from "../Components/Avatar"; // Import Avatar component
 
 const artworks = [
   {
@@ -9,7 +10,7 @@ const artworks = [
     title: "Enchanted Forest",
     category: "Digital Illustration",
     date: "2 days ago",
-    image: "/path-to-image1.jpg", // Replace with actual image path
+    image: "/path-to-image1.jpg",
   },
   {
     id: 2,
@@ -41,11 +42,9 @@ const UserProfile = () => {
 
         {/* Profile Card */}
         <div className="bg-[#FBE6FF] shadow-md p-6 rounded-lg flex items-center gap-6">
-          <img
-            src={user?.profileImage || "/default-profile.jpg"} // Use user profile image or default
-            alt="User"
-            className="w-20 h-20 rounded-full object-cover"
-          />
+          {/* Avatar Component */}
+          <Avatar name={user?.name || "Guest User"} width={80} height={80} />
+
           <div>
             <h2 className="text-xl font-bold">{user?.name || "Guest User"}</h2>
             <p className="text-gray-600 text-sm">
