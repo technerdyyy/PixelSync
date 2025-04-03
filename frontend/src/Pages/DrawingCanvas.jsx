@@ -1,9 +1,57 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaPaintBrush, FaPencilAlt, FaFillDrip } from "react-icons/fa";
 import { RiDeleteBin2Fill } from "react-icons/ri";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, logout } from "../redux/userSlice";
 import Sidebar from "../Components/Sidebar";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const DrawingCanvas = () => {
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  console.log("redux user", user);
+
+  const fetchUserDetails = async () => {
+    const token = Cookies.get("token");
+
+    if (!token) {
+      console.log("No token found, redirecting to /login...");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const URL = "http://localhost:5000/api/user-details";
+      const response = await axios.get(URL, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+
+      console.log("fetchUserDetails response:", response.data);
+
+      if (!response.data || !response.data.data) {
+        console.error("Invalid response format:", response);
+        return;
+      }
+
+      dispatch(setUser(response.data.data));
+
+      if (response.data.logout) {
+        dispatch(logout());
+        navigate("/login");
+      }
+    } catch (error) {
+      console.log("Error fetching user details:", error);
+      navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);

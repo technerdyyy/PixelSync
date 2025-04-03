@@ -1,10 +1,10 @@
-const User = require("../models/UserModel"); // ✅ Correct import
+const User = require("../models/UserModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 async function loginUser(request, response) {
   try {
-    const { email, password } = request.body;
+    const { email, password, userId } = request.body;
     console.log("Received Data:", request.body);
 
     //  Find user by email instead of userId
@@ -39,7 +39,7 @@ async function loginUser(request, response) {
 
     //  Correct cookie options
     const cookieOptions = {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: "None", // Required for cross-origin requests
     };
