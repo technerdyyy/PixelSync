@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -29,7 +29,24 @@ const artworks = [
 ];
 
 const UserProfile = () => {
-  const { user } = useSelector((state) => state.user); // Get logged-in user
+  const { user } = useSelector((state) => state.user); 
+  const [artworks, setArtworks] = useState([]); 
+
+  useEffect(() => {
+    const fetchArtworks = async () => {
+      if (!user?.email) return;
+
+      try {
+        const response = await fetch(`http://localhost:5000/user-artworks/${user.email}`);
+        const data = await response.json();
+        setArtworks(data);
+      } catch (error) {
+        console.error("Error fetching artworks:", error);
+      }
+    };
+
+    fetchArtworks();
+  }, [user]);
 
   return (
     <div className="flex">
@@ -42,15 +59,15 @@ const UserProfile = () => {
 
         {/* Profile Card */}
         <div className="bg-[#FBE6FF] shadow-md p-6 rounded-lg flex items-center gap-6">
-          {/* Avatar Component */}
-          <Avatar name={user?.name || "Guest User"} width={80} height={80} />
-
+          <img
+            src={user?.profileImage || "/default-profile.jpg"} // Use user profile image or default
+            alt="User"
+            className="w-20 h-20 rounded-full object-cover"
+          />
           <div>
             <h2 className="text-xl font-bold">{user?.name || "Guest User"}</h2>
-            <p className="text-gray-600 text-sm">
-              {user?.email || "No email available"}
-            </p>
-            <p className="text-lg font-bold mt-2">156</p>
+            <p className="text-gray-600 text-sm">{user?.email || "No email available"}</p>
+            <p className="text-lg font-bold mt-2">{artworks.length}</p>
             <span className="text-gray-500">Artworks</span>
           </div>
         </div>
@@ -64,7 +81,7 @@ const UserProfile = () => {
         {/* Artwork Gallery */}
         <div className="grid grid-cols-3 gap-6 mt-6">
           {artworks.map((art) => (
-            <div key={art.id} className="relative group">
+            <div key={art._id} className="relative group">
               <img
                 src={art.image}
                 alt={art.title}
@@ -80,9 +97,7 @@ const UserProfile = () => {
               </div>
               <div className="mt-2">
                 <h3 className="font-semibold">{art.title}</h3>
-                <p className="text-sm text-gray-500">
-                  {art.category} • {art.date}
-                </p>
+                <p className="text-sm text-gray-500">{new Date(art.createdAt).toDateString()}</p>
               </div>
             </div>
           ))}

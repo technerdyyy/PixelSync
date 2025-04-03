@@ -7,7 +7,7 @@ import { setUser, logout } from "../redux/userSlice";
 import Sidebar from "../Components/Sidebar";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-
+import saveIco from "../assets/save.png"
 const DrawingCanvas = () => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -374,8 +374,37 @@ const DrawingCanvas = () => {
           >
             Erase
           </button>
+          <img
+                    src={saveIco}
+                    alt="save"
+                    className="flex justify-end ml-9 mt-2.5 w-[30px] h-[30px] cursor-pointer"
+                    onClick={async () => {
+                      const canvas = canvasRef.current;
+                      const dataURL = canvas.toDataURL("image/png"); // Convert canvas to base64
+                      const title = prompt("Enter a title for your artwork:"); // Ask user for title
+                  
+                      if (!title) {
+                        alert("Title is required!");
+                        return;
+                      }
+                  
+                      try {
+                        const response = await axios.post("http://localhost:5000/api/save-artwork", {
+                          userEmail: user?.email, 
+                          title,
+                          image: dataURL,
+                        });
+                  
+                        alert(response.data.message);
+                      } catch (error) {
+                        console.error("Error saving artwork:", error.response?.data || error);
+                        alert("Failed to save artwork.");
+                      }
+                    }}
+                    title="Save Drawing"
+                  />
         </div>
-
+        
         {/*  Responsive Drawing Canvas */}
         <div className="relative w-[90%] max-w-[1200px]">
           <canvas
