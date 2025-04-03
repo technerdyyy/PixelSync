@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import image from "../assets/image.png"; // Ensure the correct path
-import user from "../assets/user.png"; // Ensure the correct path
+import image from "../assets/image.png"; 
+import user from "../assets/user.png"; 
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";

@@ -14,10 +14,9 @@ app.use(cors({
 app.use(cookiesParser())
 app.use(express.json()) 
 
-// Connect to DB
 connectDB();
 
-// Routes
+
 app.use('/api',router)
 
 // Start server
