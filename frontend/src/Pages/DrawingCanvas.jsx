@@ -235,58 +235,6 @@ const DrawingCanvas = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clears the entire canvas
   };
 
-  //Function to autosave canvas
-  const saveCanvasToLocal = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const dataUrl = canvas.toDataURL();
-    localStorage.setItem("savedCanvas", dataUrl);
-  };
-
-  useEffect(() => {
-    const savedCanvas = localStorage.getItem("savedCanvas");
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-
-    if (savedCanvas && canvas && context) {
-      const img = new Image();
-      img.src = savedCanvas;
-      img.onload = () => {
-        context.drawImage(img, 0, 0);
-      };
-    }
-  }, []);
-
-  window.addEventListener("mouseup", () => {
-    setIsDrawing(false);
-    saveCanvasToLocal();
-  });
-
-  //useEffect() for window resize
-  useEffect(() => {
-    const handleResize = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-
-      const ctx = canvas.getContext("2d");
-
-      // Store old canvas content
-      const oldImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-      // Update the canvas size while keeping the aspect ratio
-      const parent = canvas.parentElement;
-      canvas.width = parent.clientWidth * 0.9;
-      canvas.height = canvas.width * 0.6; // Adjust aspect ratio as needed
-
-      // Restore old content
-      ctx.putImageData(oldImageData, 0, 0);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   return (
     <div className="flex">
       {/* Sidebar */}
