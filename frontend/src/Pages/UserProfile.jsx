@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect}  from "react";
 import Sidebar from "../Components/Sidebar";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -82,7 +82,7 @@ const UserProfile = () => {
             <p className="text-gray-600 text-sm">
               {user?.email || "No email available"}
             </p>
-            <p className="text-lg font-bold mt-2">156</p>
+            <p className="text-lg font-bold mt-2">{artworks.length}</p>
             <span className="text-gray-500">Artworks</span>
           </div>
         </div>

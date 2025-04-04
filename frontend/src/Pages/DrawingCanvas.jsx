@@ -7,6 +7,7 @@ import { setUser, logout } from "../redux/userSlice";
 import Sidebar from "../Components/Sidebar";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import saveIco from "../assets/save.png"
 
 const DrawingCanvas = () => {
   const { user } = useSelector((state) => state.user);
