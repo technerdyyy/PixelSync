@@ -4,13 +4,11 @@ const jwt = require("jsonwebtoken");
 
 async function loginUser(request, response) {
   try {
-    const { email, password, userId } = request.body;
+    const { email, password, userId } = request.body; // ✅ FIXED typo
     console.log("Received Data:", request.body);
 
-    //  Find user by email instead of userId
     const user = await User.findOne({ email });
 
-    //  Check if user exists
     if (!user) {
       return response.status(400).json({
         message: "User not found",
@@ -18,8 +16,7 @@ async function loginUser(request, response) {
       });
     }
 
-    //  Fix bcrypt function
-    const verifyPassword = await bcrypt.compare(password, user.password);
+    const verifyPassword = await bcrypt.compare(password, user.password); // ✅ password now defined
 
     if (!verifyPassword) {
       return response.status(400).json({
@@ -28,20 +25,16 @@ async function loginUser(request, response) {
       });
     }
 
-    //  Token data
     const tokenData = {
       id: user._id,
       email: user.email,
     };
 
-    //  Ensure correct JWT secret
     const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-    //  Correct cookie options
     const cookieOptions = {
-      // httpOnly: true,
       secure: true,
-      sameSite: "None", // Required for cross-origin requests
+      sameSite: "None",
     };
 
     return response
@@ -54,6 +47,7 @@ async function loginUser(request, response) {
       });
 
   } catch (error) {
+    console.error("Login Error:", error); // ✅ Add this line for clearer debugging
     return response.status(500).json({
       message: error.message || "Server error",
       error: true,

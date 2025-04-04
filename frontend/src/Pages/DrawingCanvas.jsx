@@ -234,6 +234,61 @@ const DrawingCanvas = () => {
     const ctx = contextRef.current;
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clears the entire canvas
   };
+  //upload to cloudinary
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "pixel_uploads"); // ✅ your actual unsigned preset name
+  
+    try {
+      const response = await fetch("https://api.cloudinary.com/v1_1/diwna43hl/image/upload", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const data = await response.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error("Error uploading to Cloudinary:", error);
+      return null;
+    }
+  };
+//save art word
+const saveArtwork = async () => {
+    const canvas = canvasRef.current;
+    canvas.toBlob(async (blob) => {
+        if (!blob) {
+            alert("Failed to generate image blob.");
+            return;
+        }
+
+        const imageUrl = await uploadToCloudinary(blob); // Upload to Cloudinary
+        if (!imageUrl) {
+            alert("Image upload failed!");
+            return;
+        }
+
+        const title = prompt("Enter a title for your artwork:");
+        if (!title) {
+            alert("Title is required!");
+            return;
+        }
+
+        try {
+            const response = await axios.post("http://localhost:5000/api/save-artwork", {
+                userEmail: user?.email,
+                title,
+                image: imageUrl, // Save Cloudinary URL instead of base64
+            });
+
+            alert(response.data.message);
+        } catch (error) {
+            console.error("Error saving artwork:", error.response?.data || error);
+            alert("Failed to save artwork.");
+        }
+    }, "image/png");
+};
+
 
   return (
     <div className="flex">
@@ -374,6 +429,13 @@ const DrawingCanvas = () => {
           >
             Erase
           </button>
+          <img
+              src={saveIco}
+              alt="save"
+              className="flex justify-end ml-9 mt-2.5 w-[30px] h-[30px] cursor-pointer"
+              onClick={saveArtwork} // Call the updated function
+              title="Save Drawing"
+          />
         </div>
 
         {/*  Responsive Drawing Canvas */}
