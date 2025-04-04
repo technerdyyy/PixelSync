@@ -1,7 +1,9 @@
-import React, {useState, useEffect}  from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import Avatar from "../Components/Avatar"; // Import Avatar component
+
 
 const UserProfile = () => {
   const { user } = useSelector((state) => state.user);
@@ -24,7 +26,7 @@ const UserProfile = () => {
         console.error("Error fetching artworks:", error);
         setArtworks([]); // Prevents map() errors by ensuring an empty array
       }
-    };
+    };  
 
     fetchArtworks();
   }, [user]);
