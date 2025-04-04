@@ -26,7 +26,7 @@ const UserProfile = () => {
         console.error("Error fetching artworks:", error);
         setArtworks([]); // Prevents map() errors by ensuring an empty array
       }
-    };  
+    };
 
     fetchArtworks();
   }, [user]);
@@ -74,11 +74,7 @@ const UserProfile = () => {
 
         {/* Profile Card */}
         <div className="bg-[#FBE6FF] shadow-md p-6 rounded-lg flex items-center gap-6">
-          <img
-            src={user?.profileImage || "/default-profile.jpg"}
-            alt="User"
-            className="w-20 h-20 rounded-full object-cover"
-          />
+          <Avatar name={user?.name || "Guest User"} width={80} height={80} />
           <div>
             <h2 className="text-xl font-bold">{user?.name || "Guest User"}</h2>
             <p className="text-gray-600 text-sm">

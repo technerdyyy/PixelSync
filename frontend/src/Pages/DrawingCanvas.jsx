@@ -7,12 +7,12 @@ import { setUser, logout } from "../redux/userSlice";
 import Sidebar from "../Components/Sidebar";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import saveIco from "../assets/save.png"
+import saveIco from "../assets/save.png";
 const DrawingCanvas = () => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log("redux user", user);
+  // console.log("redux user", user);
 
   const fetchUserDetails = async () => {
     const token = Cookies.get("token");
@@ -437,7 +437,7 @@ const saveArtwork = async () => {
               title="Save Drawing"
           />
         </div>
-        
+
         {/*  Responsive Drawing Canvas */}
         <div className="relative w-[90%] max-w-[1200px]">
           <canvas
