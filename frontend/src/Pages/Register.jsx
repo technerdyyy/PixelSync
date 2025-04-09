@@ -24,7 +24,7 @@ const Register = () => {
     console.log("data", data);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/register",
+        `${import.meta.env.VITE_BACKEND_URL}/api/register`,
         data
       );
 

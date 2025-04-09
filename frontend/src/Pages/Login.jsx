@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import image from "../assets/image.png"; 
-import user from "../assets/user.png"; 
+import image from "../assets/image.png";
+import user from "../assets/user.png";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -35,7 +35,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/login",
+        `${import.meta.env.VITE_BACKEND_URL}/api/login`,
         {
           userId: location?.state?._id,
           email: data.email,

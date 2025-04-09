@@ -24,7 +24,7 @@ const DrawingCanvas = () => {
     }
 
     try {
-      const URL = "http://localhost:5000/api/user-details";
+      const URL = `${import.meta.env.VITE_BACKEND_URL}/api/user-details`;
       const response = await axios.get(URL, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
@@ -239,13 +239,16 @@ const DrawingCanvas = () => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "pixel_uploads"); // ✅ your actual unsigned preset name
-  
+
     try {
-      const response = await fetch("https://api.cloudinary.com/v1_1/diwna43hl/image/upload", {
-        method: "POST",
-        body: formData,
-      });
-  
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/diwna43hl/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
       const data = await response.json();
       return data.secure_url;
     } catch (error) {
@@ -253,42 +256,44 @@ const DrawingCanvas = () => {
       return null;
     }
   };
-//save art word
-const saveArtwork = async () => {
+  //save art word
+  const saveArtwork = async () => {
     const canvas = canvasRef.current;
     canvas.toBlob(async (blob) => {
-        if (!blob) {
-            alert("Failed to generate image blob.");
-            return;
-        }
+      if (!blob) {
+        alert("Failed to generate image blob.");
+        return;
+      }
 
-        const imageUrl = await uploadToCloudinary(blob); // Upload to Cloudinary
-        if (!imageUrl) {
-            alert("Image upload failed!");
-            return;
-        }
+      const imageUrl = await uploadToCloudinary(blob); // Upload to Cloudinary
+      if (!imageUrl) {
+        alert("Image upload failed!");
+        return;
+      }
 
-        const title = prompt("Enter a title for your artwork:");
-        if (!title) {
-            alert("Title is required!");
-            return;
-        }
+      const title = prompt("Enter a title for your artwork:");
+      if (!title) {
+        alert("Title is required!");
+        return;
+      }
 
-        try {
-            const response = await axios.post("http://localhost:5000/api/save-artwork", {
-                userEmail: user?.email,
-                title,
-                image: imageUrl, // Save Cloudinary URL instead of base64
-            });
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/save-artwork",
+          {
+            userEmail: user?.email,
+            title,
+            image: imageUrl, // Save Cloudinary URL instead of base64
+          }
+        );
 
-            alert(response.data.message);
-        } catch (error) {
-            console.error("Error saving artwork:", error.response?.data || error);
-            alert("Failed to save artwork.");
-        }
+        alert(response.data.message);
+      } catch (error) {
+        console.error("Error saving artwork:", error.response?.data || error);
+        alert("Failed to save artwork.");
+      }
     }, "image/png");
-};
-
+  };
 
   return (
     <div className="flex">
@@ -430,11 +435,11 @@ const saveArtwork = async () => {
             Erase
           </button>
           <img
-              src={saveIco}
-              alt="save"
-              className="flex justify-end ml-9 mt-2.5 w-[30px] h-[30px] cursor-pointer"
-              onClick={saveArtwork} // Call the updated function
-              title="Save Drawing"
+            src={saveIco}
+            alt="save"
+            className="flex justify-end ml-9 mt-2.5 w-[30px] h-[30px] cursor-pointer"
+            onClick={saveArtwork} // Call the updated function
+            title="Save Drawing"
           />
         </div>
 

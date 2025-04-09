@@ -4,7 +4,6 @@ import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import Avatar from "../Components/Avatar"; // Import Avatar component
 
-
 const UserProfile = () => {
   const { user } = useSelector((state) => state.user);
   const [artworks, setArtworks] = useState([]);
@@ -14,7 +13,9 @@ const UserProfile = () => {
       if (!user?.email) return;
 
       try {
-        const response = await fetch(`http://localhost:5000/api/user-artworks/${user.email}`);
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/user-artworks/${user.email}`
+        );
         const data = await response.json();
 
         if (Array.isArray(data)) {
@@ -33,9 +34,14 @@ const UserProfile = () => {
 
   const handleDeleteAll = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/delete-all-artworks/${user.email}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/delete-all-artworks/${
+          user.email
+        }`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         setArtworks([]); // Clear UI after deletion
@@ -49,9 +55,12 @@ const UserProfile = () => {
 
   const handleDeleteArtwork = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/delete-artwork/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/delete-artwork/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         setArtworks((prev) => prev.filter((art) => art._id !== id));
