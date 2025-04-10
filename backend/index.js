@@ -10,7 +10,7 @@ const socketHandler = require("./socket"); // Import socket logic
 dotenv.config();
 const app = express();
 app.use(cors({
-  origin: '*',  
+  origin: process.env.FRONTEND_URL|| "http://localhost:5173",  
     credentials: true 
 }))
 app.use(cookiesParser());
@@ -26,7 +26,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = require("socket.io")(server, {
   cors: {
-    origin: '*',
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,  // ✅ This is required for `withCredentials: true`
   },
