@@ -279,7 +279,8 @@ const DrawingCanvas = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/save-artwork",
+          `${import.meta.env.VITE_BACKEND_URL}/api/save-artwork`,
+
           {
             userEmail: user?.email,
             title,
